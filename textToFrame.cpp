@@ -15,6 +15,7 @@ std::vector<frame> buildFrame();
 
 int main(){
    std::vector<frame> frames;
+   std::cout << "Building Frame" << std::endl;
    frames = buildFrame();
    printFrameInfo(frames);
    return 0;
@@ -22,28 +23,29 @@ int main(){
 
 /// Creates a vector of frames from a given file
 std::vector<frame> buildFrame(){
-   std::ifstream asciiText ("files\\file_1.txt", std::ios::in|std::ios::binary|std::ios::ate);
-   std::vector<frame> frames;
-   char * buffer;
-   int ctr = 0;
-   bool invalid = false;
+  std::ifstream asciiText ("files/file_1.txt", std::ios::in|std::ios::binary|std::ios::ate);
+  std::vector<frame> frames;
+  char * buffer;
+  int ctr = 0;
+  bool invalid = false;
 
-   if(asciiText.is_open()){
-     asciiText.seekg(0, asciiText.beg);
-     do{
-	 buffer = new char[63];
-	 asciiText.read(buffer, 64);
-	 frames.push_back(frame());
-	 frames[ctr].data = buffer;
-	 invalid = (ctr % 5 == 0) ? true:false;
-	 frames[ctr].parityBit = parity(buffer, invalid);
-	 ctr++;
-      }while(!asciiText.eof());
-      asciiText.close();
+  if(asciiText.is_open()){
+   asciiText.seekg(0, asciiText.beg);
+   do{
+    buffer = new char[63]; // Are frames 64 bits or 64 characters (256 bits)?
+    asciiText.read(buffer, 64); // Would this not read in the line number as well?
+    frames.push_back(frame());
+    frames[ctr].data = buffer;
+    invalid = (ctr % 5 == 0) ? true:false;
+    frames[ctr].parityBit = parity(buffer, invalid);
+    ctr++;
+    } while(!asciiText.eof());
+    asciiText.close();
+    std::cout << "Lines read: " << std::endl;
 
-   }
-   else std::cout << "An error has occured when opening file" << std::endl;
-   return frames;
+  }
+  else std::cout << "An error has occured when opening file" << std::endl;
+  return frames;
 }
 
 
@@ -57,13 +59,11 @@ char parity(char * buffer, bool invalid){
 
 /// Prints frame parity bit and data
 void printFrameInfo(std::vector<frame> frames){
-   for(int i = 0; i < 100; i++){
+   for(int i = 0; i < frames.size(); i++){
+        std::cout << "Frame: " << i << std::endl;
         std::cout << frames[i].parityBit << ' ';
         for(int j = 0; j <= 63; j++)
             std::cout << frames[i].data[j];
         std::cout << std::endl;
    }
 }
-
-
-

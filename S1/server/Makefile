@@ -4,21 +4,17 @@ CXX = g++
 CXXFLAGS = -std=c++0x -g
 
 server = ServerSocket.o Socket.o server.o ServerSocket.h Socket.h SocketException.h
-client = ClientSocket.o Socket.o client.o ServerSocket.h Socket.h SocketException.h
 
-all : server client
+all : server
 
 server: $(server)
 	$(CXX) $(CXXFLAGS) -o server $(server)
-
-client: $(client)
-	g++ -o client $(client)
+	server
 
 Socket: Socket.cpp
 ServerSocket: ServerSocket.cpp
 ClientSocket: ClientSocket.cpp
 server: server.cpp
-client: client.cpp
 
 clean:
-	rm -f *.o server client
+	rm -f *.o server
