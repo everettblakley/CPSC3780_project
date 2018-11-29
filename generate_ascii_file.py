@@ -6,7 +6,6 @@ def get_random_string(length):
     for i in range(length):
         random_list.append(random.choice(string.ascii_uppercase + string.digits))
     return ''.join(random_list)
-# print get_random_string(10)
 
 filesRoot = r"files/file_"
 

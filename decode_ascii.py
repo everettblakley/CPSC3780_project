@@ -15,7 +15,7 @@ numFiles = 1
 
 for i in range(numFiles):
   outFile = open(filesRoot + str(1) + ".txt", "w")
-  for j in range(1000):
+  for j in range(2):
     length = random.randint(3, 500)
     line = get_random_string(length) + "00001010"
     line = str(j+1) + " " + line + '\n'
