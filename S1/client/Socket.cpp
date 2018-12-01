@@ -5,8 +5,6 @@
 #include <errno.h>
 #include <fcntl.h>
 
-
-
 Socket::Socket() : m_sock ( -1 )
 {
    memset(&m_addr, 0, sizeof(m_addr));
@@ -29,11 +27,9 @@ bool Socket::create()
    int on = 1;
    if (setsockopt(m_sock, SOL_SOCKET, SO_REUSEADDR, (const char*) &on, sizeof (on)) == -1)
       return false;
-   
+
    return true;
 }
-
-
 
 bool Socket::bind (const int port)
 {
@@ -51,7 +47,7 @@ bool Socket::bind (const int port)
    if (bind_return == -1){
       return false;
    }
-   
+
    return true;
 }
 
@@ -117,8 +113,6 @@ int Socket::recv( std::string& s) const
    }
 }
 
-
-
 bool Socket::connect (const std::string host, const int port)
 {
    if (!is_valid())
@@ -139,4 +133,3 @@ bool Socket::connect (const std::string host, const int port)
    else
       return false;
 }
-
