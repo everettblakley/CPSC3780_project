@@ -1,0 +1,7 @@
+00001 +---------------------------------------------------------------------------+
+00002 | Course: CPSC3780 - Data Communications and Networking                     |
+00003 | Professor: John Zhang                                                     |
+00004 | Term: Fall 2018                                                           |
+00005 | Group Members: Everett Blakley, Dallan McCarthy, and Mitchell Sulz-Martin |
+00006 +---------------------------------------------------------------------------+
+00007 END OF FILE
