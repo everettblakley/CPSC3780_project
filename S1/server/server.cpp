@@ -5,20 +5,21 @@
 
 int main(int argc, int argv[])
 {
-   std::cout << "running....\n";
+   std::cout << "running....\n\n";
    try{
       // Create the socket
       ServerSocket server(30000);
 
       while (true){
-    	 ServerSocket new_sock;
-    	 server.accept(new_sock);
-    	 try{
-         protocol_server(new_sock);
-    	 }
-    	 catch(SocketException& e){
-         std::cout << "Exception caught: " << e.description() << std::endl;
-    	 }
+      	 ServerSocket new_sock;
+      	 server.accept(new_sock);
+      	 try{
+           protocol_server(new_sock);
+           std::cout << "File transfered." << std::endl << std::endl;
+      	 }
+      	 catch(SocketException& e){
+           std::cout << "Exception caught: " << e.description() << std::endl;
+      	 }
       }
    }
    catch (SocketException& e){
