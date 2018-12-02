@@ -4,7 +4,7 @@
 00004 | Term: Fall 2018                                                           |
 00005 | Group Members: Everett Blakley, Dallan McCarthy, and Mitchell Sulz-Martin |
 00006 +---------------------------------------------------------------------------+
-00007
+00007 
 00008 Tutorial for Server/Client Communication Program
 00009  - This program is designed to send simple text files across a network from a server to client(s).
 00010  - The protocol followed is a modified version of the Stop and Wait protocol discussed in lecture. Thus the server will send the data in individual frames, broken in frames of 64 bytes, and wait for a response from the client.
