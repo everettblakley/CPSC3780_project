@@ -13,21 +13,11 @@ int main(int argc, int argv[])
       while (true){
     	 ServerSocket new_sock;
     	 server.accept(new_sock);
-      //  int req_count = 0;
     	 try{
-    	    while (true){
-            protocol_server(new_sock);
-    	      //  std::string req;
-    	      //  new_sock >> req;
-            //  std::cout << "Request #" << req_count << " from client: " << req << std::endl;
-            //  std::string data;
-            //  data = "Responding to req #";
-            //  data += std::to_string(req_count);
-    	      //  new_sock << data;
-            //  req_count++;
-    	    }
+         protocol_server(new_sock);
     	 }
-    	 catch(SocketException&){
+    	 catch(SocketException& e){
+         std::cout << "Exception caught: " << e.description() << std::endl;
     	 }
       }
    }
