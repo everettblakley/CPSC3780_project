@@ -4,17 +4,26 @@
 #include <string>
 
 int main() {
-   std::cout << "running....\n\n";
+  std::string port = "";
+  std::cout << "Please enter the port you would like to start the server on: ";
+  std::cin >> port;
+  int dataPort = std::stoi(port);
+
    try{
       // Create the socket
-      ServerSocket server(30000);
+      ServerSocket serverDat(dataPort);
+      ServerSocket serverAck(dataPort + 1);
 
+      std::cout << "running....\n\n";
       while (true){
-      	 ServerSocket new_sock;
-      	 server.accept(new_sock);
+      	 ServerSocket new_sockDat;
+         ServerSocket new_sockAck;
+
+      	 serverDat.accept(new_sockDat);
+         new_sockDat << "30001";
+         serverAck.accept(new_sockAck);
       	 try{
-           protocol_server(new_sock);
-           std::cout << "File Transfered" << std::endl;
+           protocol_server(new_sockDat, new_sockAck);
       	 }
       	 catch(SocketException& e){
            std::cout << "Exception caught: " << e.description() << std::endl;

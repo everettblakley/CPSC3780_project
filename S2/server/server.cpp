@@ -10,7 +10,9 @@
 
 void *Bserver( void *);
 void *serveClient(void *);
-ServerSocket server(30000);
+
+ServerSocket serverDat(30000);
+ServerSocket serverAck(30001);
 
 int main()
 {
@@ -31,10 +33,15 @@ void *serveClient(void * args){
   try{
     while(true)
     {
-      ServerSocket new_sock;
-      server.accept(new_sock);
+      ServerSocket new_sock_dat;
+      ServerSocket new_sock_ack;
+
+      serverDat.accept(new_sock_dat);
+      new_sock_dat << "30001";
+      serverAck.accept(new_sock_ack);
+
       try{
-        protocol_server(new_sock);
+        protocol_server(new_sock_dat, new_sock_ack);
       }
       catch (SocketException& e){}
     }

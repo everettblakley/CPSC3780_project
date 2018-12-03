@@ -6,14 +6,24 @@
 #include <stdio.h>
 
 int main() {
+  std::string acknackport; //= 30001;
    try{
-      // Replace "localhost" with the hostname
-      // that you're running your server.
       std::string IPaddr = "";
       std::cout << "Enter the IP address of the server (or localhost): ";
       std::cin >> IPaddr;
-      IPaddr = (IPaddr != "") ? IPaddr : "localhost";
-      ClientSocket client_socket(IPaddr, 30000);
+
+      std::string port = "";
+      std::cout << "Please enter the server port number: ";
+      std::cin >> port;
+      int dataPort = std::stoi(port);
+
+      //Data port
+      ClientSocket client_socketDat(IPaddr, dataPort);
+
+      //Ack/Nak port
+      client_socketDat >> acknackport;
+      int new_port = std::stoi(acknackport);
+      ClientSocket client_socketAck(IPaddr, new_port);
 
       std::cout << std::endl <<
       "Attempting to connect to " << IPaddr << "..." << std::endl << std::endl;
@@ -32,12 +42,13 @@ int main() {
       } while (intChoice < 0 || intChoice >= files.size());
 
         std::cout << std::endl << "Grabbing " << files[intChoice] << " from the server " << std::endl << std::endl;
-        protocol_client(client_socket, files[intChoice]);
+        protocol_client(client_socketDat, client_socketAck, files[intChoice]);
       }
       catch (SocketException& e) {}
    }
    catch(SocketException& e){
       std::cout << "Exception was caught building socket: " << e.description() << "\n";
    }
+
    return 0;
 }

@@ -99,7 +99,7 @@ std::vector<frame> buildFrames(std::string filename){
 }
 
 /// Client-side transmission protocol
-void protocol_client(ClientSocket& socket, std::string filename = "") {
+void protocol_client(ClientSocket& socketData, ClientSocket& socketAck, std::string filename = "") {
   std::string receivedData = "";
   int seq_exp = 0; //When starting a session, initial seq_exp is 0
   frame f; // assemble intial 'request' frame
@@ -107,11 +107,11 @@ void protocol_client(ClientSocket& socket, std::string filename = "") {
   std::string currentLine = "000001";
   std::ofstream outputFile (filename, std::ios::out);
   f.seq = std::to_string(seq_exp);
-  send_data(f.seq, currentLine, filename, socket, "nak"); // send the request to the server
+  send_data(f.seq, currentLine, filename, socketAck, "nak"); // send the ack/nak frame on Ack/Nak socket
   while(true) {
     frameType = "nak";
     std::string res;
-    socket >> res; // get response from the server
+    socketData >> res; // get response from the server on Data socket
     f = assemble_frame(res); // parse string into a frame
     if (f.type == "nat") break; //Safe exit on NAT (NAT: No Data) frame type.
     std::string parity = calcEvenParity(f.data, false);
@@ -130,30 +130,30 @@ void protocol_client(ClientSocket& socket, std::string filename = "") {
       seq_exp = (seq_exp + 1) % 2; // if the response seq no matches, increment
       }
     }
-    send_data(std::to_string(seq_exp), currentLine, "", socket, frameType); // send the ack/nak frame
+    send_data(std::to_string(seq_exp), currentLine, "", socketAck, frameType); // send the ack/nak frame on Ack/Nak socket
   }
   std::cout << currentLine << " " << receivedData << std::endl;
   outputFile.close();
 }
 
 /// Server-side transmission protocol
-void protocol_server(ServerSocket& socket) {
+void protocol_server(ServerSocket& socketDat, ServerSocket& socketAck) {
   int frameCtr = 0; // current frame being sent
   int seq_exp = 0; // expected ack frame< std::endl;
   std::string req;
   bool first = true;
-  socket >> req;
+  socketAck >> req;
   frame f = assemble_frame(req);
   std::vector<frame> frames = buildFrames(f.data); // all frames for the file
-  socket << frame_to_string(frames[frameCtr]);
+  socketDat << frame_to_string(frames[frameCtr]);
   std::cout << "Request accepted. \nTransmitting file ..." << std::endl;
   while(frameCtr < frames.size()-1){
-    socket >> req;
+    socketAck >> req;
     f = assemble_frame(req); // build a frame from the request
     if (f.type == "ack"){
       seq_exp = (seq_exp + 1) % 2;
       frameCtr+=1;
-      socket << frame_to_string(frames[frameCtr]);
+      socketDat << frame_to_string(frames[frameCtr]);
     }
     else{
       // On reciept NAK, validate/correct frame.
@@ -164,9 +164,9 @@ void protocol_server(ServerSocket& socket) {
         // Check and fix sequence number
         if(frames[frameCtr].seq != f.seq)
           seq_exp = (seq_exp + 1) % 2;
-        socket << frame_to_string(frames[frameCtr]);
+        socketDat << frame_to_string(frames[frameCtr]);
     }
   }
-  socket << "00nat999999End of File; Close the socket";
+  socketDat << "00nat999999End of File; Close the socket";
   std::cout << "File transmitted" << std::endl;
 }
