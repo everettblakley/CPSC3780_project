@@ -13,16 +13,19 @@ int main() {
       try {
         std::vector<std::string> files{"sherlock_holmes.txt", "tutorial.txt", "file_1.txt" };
         char choice;
-        do{
+        int intChoice;
         std::cout << "The available files for transfer are:" << std::endl;
         for (int i = 0; i < files.size(); i++) {
           std::cout << "\t" << i << ". " << files[i] << std::endl;
         }
+        do{
         std::cout << "Please select the file number to transfer: ";
         std::cin >> choice;
-      } while ((int)choice >= 0 && (int)choice < files.size());
+        intChoice = (int)choice - 48;
+      } while (intChoice < 0 || intChoice >= files.size());
 
-        protocol_client(client_socket, files[(int)choice]);
+        std::cout << std::endl << "Grabbing " << files[intChoice] << " from the server " << std::endl << std::endl;
+        protocol_client(client_socket, files[intChoice]);
       }
       catch (SocketException& e) {}
    }

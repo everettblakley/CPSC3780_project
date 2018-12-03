@@ -119,6 +119,7 @@ void protocol_client(ClientSocket& socket, std::string filename = "") {
     std::string res;
     socket >> res; // get response from the server
     f = assemble_frame(res); // parse string into a frame
+    if (f.type == "nat") break;
     std::string parity = calcEvenParity(f.data, false);
     if (f.seq == std::to_string(seq_exp)) {
       if (f.parity == parity) {
@@ -173,4 +174,5 @@ void protocol_server(ServerSocket& socket) {
         socket << frame_to_string(frames[frameCtr]);
     }
   }
+  socket << "00nat99999End of File; Close the socket";
 }
