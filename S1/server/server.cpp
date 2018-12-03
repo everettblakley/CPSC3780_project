@@ -3,8 +3,7 @@
 #include "SocketException.h"
 #include <string>
 
-int main(int argc, int argv[])
-{
+int main() {
    std::cout << "running....\n\n";
    try{
       // Create the socket
