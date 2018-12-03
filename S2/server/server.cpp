@@ -8,64 +8,55 @@
 
 #define NUM_THREADS 5
 
-ServerSocket new_sock;
+void *Bserver( void *);
+void *serveClient(void *);
 ServerSocket server(30000);
-
-void *Bserver( void *threadid) {
-   long ThreadID;
-   ThreadID = (long)threadid;
-
-   std::cout << "Thread #: " << pthread_self() << std::endl;
-   //while(true){
-     try{
-       server.accept(new_sock);
-        protocol_server(new_sock);
-        std::cout << "File Transfered" << std::endl;
-     }
-     catch(SocketException& e){
-        std::cout << "Exception caught: " << e.description() << std::endl;
-     }
-     //pthread_exit(threadid);
-   //}
-
-}
-
 
 int main()
 {
-   pthread_t threads[NUM_THREADS];
-   int rc;
-   int i=0;
-
-   std::cout << "running....\n\n";
-   /*for(i = 0; i < NUM_THREADS; i++) {
-      std:: cout << "Create thread " << i << std::endl;
-      rc = pthread_create( &threads[i], NULL, Bserver, (void *)i);
-
-      if(rc) {
-	 std::cout << "Didnt create thread" << std::endl;
-	 exit(-1);
-	 }*/
-
-   try{
-      // Create the socket
-      //ServerSocket server(30000);
-
-      //while (true){
-	//  ServerSocket server(30000);
-  //     	 server.accept(new_sock);
-	 for(i = 0; i < 5; i++) {
-	    std:: cout << "Create thread " << i << std::endl;
-	    pthread_create( &threads[i], NULL, Bserver, (void *)i );
-      //pthread_join(threads[i], NULL);
-	 }
-
-      }
-   // }
-   catch (SocketException& e){
-      std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
-
+   pthread_t server_thread;
+   for(int i = 0; i < 5; i++)
+   {
+     if (pthread_create( &server_thread, NULL, Bserver, NULL)){
+       std::cout << "Could not create server thread" << std::endl;
+       exit(-1);
+     }
    }
    pthread_exit(NULL);
   return 0;
+}
+
+void *serveClient(void * args){
+  pthread_detach(pthread_self());
+  try{
+    while(true)
+    {
+      ServerSocket new_sock;
+      server.accept(new_sock);
+      try{
+        protocol_server(new_sock);
+      }
+      catch (SocketException& e){}
+    }
+  }
+  catch (SocketException& e)
+  {
+    std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
+  }
+  pthread_exit(NULL);
+}
+
+void *Bserver( void *args) {
+   pthread_t worker_thread;
+     try{
+        if (pthread_create(&worker_thread, NULL, serveClient, NULL) != 0)
+        {
+          std::cout << "Could not create worker thread";
+          pthread_exit(NULL);
+        }
+      }
+     catch(SocketException& e){
+        std::cout << "Exception caught: " << e.description() << std::endl;
+     }
+     pthread_exit(NULL);
 }

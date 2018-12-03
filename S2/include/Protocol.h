@@ -16,6 +16,12 @@ struct frame{
    std::string data;
 };
 
+
+struct workerArgs
+{
+  ServerSocket ss;
+};
+
 /// Converts a frame to a string for transmission
 std::string frame_to_string(frame f) {
   std::string outString;
@@ -154,7 +160,7 @@ void protocol_server(ServerSocket& socket) {
   frame f = assemble_frame(req);
   std::vector<frame> frames = buildFrames(f.data); // all frames for the file
   socket << frame_to_string(frames[frameCtr]);
-  std::cout << "Request accepted." << std::endl;
+  std::cout << "Request accepted. \nTransmitting file ..." << std::endl;
   while(frameCtr < frames.size()-1){
     socket >> req;
     f =assemble_frame(req); // build a frame from the request
@@ -175,4 +181,5 @@ void protocol_server(ServerSocket& socket) {
     }
   }
   socket << "00nat99999End of File; Close the socket";
+  std::cout << "File transmitted" << std::endl;
 }
