@@ -67,6 +67,7 @@ std::vector<frame> buildFrames(std::string filename){
    int bufferLength = 0;
    bool invalidFrame = false;
    int currentLineLength = 0;
+   std::string frameString = "";
 
    if(asciiText.is_open()){
   	 do{
@@ -75,9 +76,8 @@ std::vector<frame> buildFrames(std::string filename){
       line.erase(0, 7);
       currentLineLength = line.length();
       for(int i = int(currentLineLength/64); i >= 0; i--){
-              if (currentLineLength < 64){
-                  bufferLength = currentLineLength;
-              }
+              if (currentLineLength < 64)
+                bufferLength = currentLineLength;
               else{
                   bufferLength = 64;
                   currentLineLength -= 64;
@@ -86,21 +86,15 @@ std::vector<frame> buildFrames(std::string filename){
           for(int j = 0; j < bufferLength; j++)
               buffer += line.at(j);
           line.erase(0, bufferLength);
-          frames[ctr].data = buffer;
-          invalidFrame = (ctr % 5 == 0) ? true:false;
-          frames[ctr].parity = calcEvenParity(buffer, invalidFrame);
-          frames[ctr].line = lineNum;
-          frames[ctr].seq = std::to_string(ctr % 2);
-          frames[ctr].type = "dat";
+          frameString = std::to_string(ctr % 2) + calcEvenParity(buffer, invalidFrame) + "dat" + lineNum + buffer;
+          frames[ctr] = assemble_frame(frameString);
           ++ctr;
           buffer = "";
       }
-	 }while(!asciiText.eof());
-	 asciiText.close();
+	 } while(!asciiText.eof());
+   asciiText.close();
    }
-   else{
-        std::cout << "Could not find file" << std::endl;
-      }
+   else std::cout << "Could not find file" << std::endl;
    return frames;
 }
 
@@ -119,17 +113,15 @@ void protocol_client(ClientSocket& socket, std::string filename = "") {
     std::string res;
     socket >> res; // get response from the server
     f = assemble_frame(res); // parse string into a frame
-    if (f.type == "nat") break;
+    if (f.type == "nat") break; //Safe exit on NAT (NAT: No Data) frame type.
     std::string parity = calcEvenParity(f.data, false);
     if (f.seq == std::to_string(seq_exp)) {
       if (f.parity == parity) {
-        if (f.line == currentLine) {
+        if (f.line == currentLine)
           receivedData += f.data;
-        }
         else {
-          if (outputFile.is_open()) {
+          if (outputFile.is_open())
             outputFile << currentLine << " " << receivedData << std::endl;
-          }
           std::cout << currentLine << " " << receivedData << std::endl;
           currentLine = f.line;
           receivedData = f.data;
@@ -157,20 +149,21 @@ void protocol_server(ServerSocket& socket) {
   std::cout << "Request accepted. \nTransmitting file ..." << std::endl;
   while(frameCtr < frames.size()-1){
     socket >> req;
-    f =assemble_frame(req); // build a frame from the request
+    f = assemble_frame(req); // build a frame from the request
     if (f.type == "ack"){
       seq_exp = (seq_exp + 1) % 2;
       frameCtr+=1;
       socket << frame_to_string(frames[frameCtr]);
     }
     else{
+      // On reciept NAK, validate/correct frame.
         std::string parityCheck = calcEvenParity(frames[frameCtr].data, false);
-        if(frames[frameCtr].parity != parityCheck){
+        // Check and fix parity
+        if(frames[frameCtr].parity != parityCheck)
           frames[frameCtr].parity = parityCheck;
-        }
-        if(frames[frameCtr].seq != f.seq){
+        // Check and fix sequence number
+        if(frames[frameCtr].seq != f.seq)
           seq_exp = (seq_exp + 1) % 2;
-        }
         socket << frame_to_string(frames[frameCtr]);
     }
   }
