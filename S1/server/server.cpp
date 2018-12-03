@@ -14,7 +14,7 @@ int main() {
       ServerSocket serverDat(dataPort);
       ServerSocket serverAck(dataPort + 1);
 
-      std::cout << "running....\n\n";
+      std::cout << "Running server of ports " << dataPort << " and " << dataPort + 1 << "...\n\n";
       while (true){
       	 ServerSocket new_sockDat;
          ServerSocket new_sockAck;
