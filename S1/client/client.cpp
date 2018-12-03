@@ -29,7 +29,8 @@ int main() {
       std::cout << std::endl <<
       "Attempting to connect to " << IPaddr << "..." << std::endl << std::endl;
       try {
-        std::vector<std::string> files{"sherlock_holmes.txt", "tutorial.txt", "file_1.txt" };
+        std::vector<std::string> files{"five_random_lines.txt", "large_ebooks.txt", "random_characters.txt",
+        "sherlock_holmes.txt", "tutorial.txt"};
         char choice;
         int intChoice;
         std::cout << "The available files for transfer are:" << std::endl;
