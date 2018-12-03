@@ -7,8 +7,6 @@
 
 int main() {
    try{
-      // Replace "localhost" with the hostname
-      // that you're running your server.
       std::string IPaddr = "";
       std::cout << "Enter the IP address of the server (or localhost): ";
       std::cin >> IPaddr;
