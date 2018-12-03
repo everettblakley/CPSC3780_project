@@ -29,9 +29,9 @@ frame assemble_frame(std::string s) {
   outFrame.seq = s[0];
   outFrame.parity = s[1];
   outFrame.type = s.substr(2,3);
-  outFrame.line = s.substr(5, 5);
-  if (s.length() > 10) {
-    outFrame.data = s.substr(10);
+  outFrame.line = s.substr(5, 6);
+  if (s.length() > 11) {
+    outFrame.data = s.substr(11);
   }
   else outFrame.data = "";
   return outFrame;
@@ -71,8 +71,8 @@ std::vector<frame> buildFrames(std::string filename){
    if(asciiText.is_open()){
   	 do{
       std::getline(asciiText, line);
-      std::string lineNum = line.substr(0, 5);
-      line.erase(0, 6);
+      std::string lineNum = line.substr(0, 6);
+      line.erase(0, 7);
       currentLineLength = line.length();
       for(int i = int(currentLineLength/64); i >= 0; i--){
               if (currentLineLength < 64){
@@ -110,8 +110,8 @@ void protocol_client(ClientSocket& socket, std::string filename = "") {
   int seq_exp = 0; //When starting a session, initial seq_exp is 0
   frame f; // assemble intial 'request' frame
   std::string frameType;
-  std::string currentLine = "00001";
-  std::ofstream outputFile ("output.txt", std::ios::out);
+  std::string currentLine = "000001";
+  std::ofstream outputFile (filename, std::ios::out);
   f.seq = std::to_string(seq_exp);
   send_data(f.seq, currentLine, filename, socket, "nak"); // send the request to the server
   while(true) {
@@ -174,5 +174,5 @@ void protocol_server(ServerSocket& socket) {
         socket << frame_to_string(frames[frameCtr]);
     }
   }
-  socket << "00nat99999End of File; Close the socket";
+  socket << "00nat999999End of File; Close the socket";
 }

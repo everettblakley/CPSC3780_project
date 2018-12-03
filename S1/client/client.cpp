@@ -9,7 +9,14 @@ int main() {
    try{
       // Replace "localhost" with the hostname
       // that you're running your server.
-      ClientSocket client_socket("localhost", 30000); //IP addr for 36wolverine : 142.66.140.51
+      std::string IPaddr = "";
+      std::cout << "Enter the IP address of the server (or localhost): ";
+      std::cin >> IPaddr;
+      IPaddr = (IPaddr != "") ? IPaddr : "localhost";
+      ClientSocket client_socket(IPaddr, 30000);
+
+      std::cout << std::endl <<
+      "Attempting to connect to " << IPaddr << "..." << std::endl << std::endl;
       try {
         std::vector<std::string> files{"sherlock_holmes.txt", "tutorial.txt", "file_1.txt" };
         char choice;
