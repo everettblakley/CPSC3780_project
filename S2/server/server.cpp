@@ -6,23 +6,28 @@
 #include <iostream>
 #include <pthread.h>
 
-#define NUM_THREADS 2
+#define NUM_THREADS 5
 
 ServerSocket new_sock;
+ServerSocket server(30000);
 
 void *Bserver( void *threadid) {
    long ThreadID;
    ThreadID = (long)threadid;
-   while(true){
-   try{
-      protocol_server(new_sock);
-      std::cout << "File Transfered" << std::endl;
-   }
-   catch(SocketException& e){
-      std::cout << "Exception caught: " << e.description() << std::endl;
-   }
-   pthread_exit(threadid);
-   }
+
+   std::cout << "Thread #: " << pthread_self() << std::endl;
+   //while(true){
+     try{
+       server.accept(new_sock);
+        protocol_server(new_sock);
+        std::cout << "File Transfered" << std::endl;
+     }
+     catch(SocketException& e){
+        std::cout << "Exception caught: " << e.description() << std::endl;
+     }
+     //pthread_exit(threadid);
+   //}
+
 }
 
 
@@ -45,24 +50,22 @@ int main()
    try{
       // Create the socket
       //ServerSocket server(30000);
-      
+
       //while (true){
-	 ServerSocket server(30000);
-      	 server.accept(new_sock);
-	 for(i = 0; i < NUM_THREADS; i++) {
+	//  ServerSocket server(30000);
+  //     	 server.accept(new_sock);
+	 for(i = 0; i < 5; i++) {
 	    std:: cout << "Create thread " << i << std::endl;
-	    rc = pthread_create( &threads[i], NULL, Bserver, (void *)i);
+	    pthread_create( &threads[i], NULL, Bserver, (void *)i );
+      //pthread_join(threads[i], NULL);
 	 }
-	 //std::cout<<"WHat the fuck is rc= " << rc << std::endl;
-	 //rc = pthread_create( &threads[i], NULL, Bserver, (void *)i);
-	 //std::cout<<"WHat the fuck is rc= " << rc << std::endl;
-	 //pthread_exit(NULL);
+
       }
    // }
    catch (SocketException& e){
       std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
-      pthread_exit(NULL);
+
    }
+   pthread_exit(NULL);
   return 0;
 }
-
