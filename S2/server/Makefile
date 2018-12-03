@@ -1,7 +1,7 @@
 # Makefile for the socket programming tutorial
 #
 CXX = g++
-CXXFLAGS = -std=c++0x -g
+CXXFLAGS = -std=c++0x -g -lpthread
 SRC_DIR = ../src
 SRC_INCLUDE = ../include
 INCLUDE = -I ${SRC_INCLUDE}
