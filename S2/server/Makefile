@@ -1,7 +1,7 @@
 # Makefile for the S2 server program
 #
 CXX = g++
-CXXFLAGS = -std=c++11 -g -lpthread
+CXXFLAGS = -std=c++11 -g -lpthread -pthread
 SRC_DIR = ../../src
 SRC_INCLUDE = ../../include
 INCLUDE = -I ${SRC_INCLUDE}
@@ -13,7 +13,7 @@ all : server
 
 server: $(SRC_DIR)
 	$(CXX) $(CXXFLAGS) -o server $(INCLUDE) $(SRC_DIR)/*.cpp server.cpp
-	serverS
+	./server
 
 clean:
 	rm -f *.o server

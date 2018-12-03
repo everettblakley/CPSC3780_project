@@ -11,11 +11,13 @@
 void *Bserver( void *);
 void *serveClient(void *);
 
-ServerSocket serverDat(30000);
-ServerSocket serverAck(30001);
+int serverPort = 30000;
+ServerSocket serverDat(serverPort);
+ServerSocket serverAck(serverPort+1);
 
 int main()
 {
+  std::cout << "Running server on ports " << serverPort << " and " << serverPort + 1 << "..." << std::endl;
    pthread_t server_thread;
    for(int i = 0; i < 5; i++)
    {
