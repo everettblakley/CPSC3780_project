@@ -1,0 +1,33 @@
+000001 
+00001  ---------------------------------------------------------------------------+
+00002   Course: CPSC3780 - Data Communications and Networking                     |
+00003   Professor: John Zhang                                                     |
+00004   Term: Fall 2018                                                           |
+00005   Group Members: Everett Blakley, Dallan McCarthy, and Mitchell Sulz-Martin |
+00006  ---------------------------------------------------------------------------+
+00007 
+00008  utorial for Server/Client Communication Program
+00009  - This program is designed to send simple text files across a network from a server to client(s).
+00010  - The protocol followed is a modified version of the Stop and Wait protocol discussed in lecture. Thus the server will send the data in individual frames, broken in frames of 64 bytes, and wait for a response from the client.
+00011    - A data structure was created to store data for the frames. The struct has the following data members:
+00012      - seq (string): the sequence number of the frame being sent. Simple is a simple simplex protocol, this value will either be 0 or 1
+00013      - parity (string): the parity bit for the data of the frame. In order to test that the protocol properly deals with corrupted data, every 5th frame will have an incorrect parity bit.
+00014      - type (string): the type of the frame. Either ack (acknowledgement of a correct frame), nak (negative acknowledgement of an incorrect frame), or dat (data frame sent containing information from the text file)
+00015      - line (string): the line number that the data frame corresponds to in the file. Line numbers are 5 digits long, meaning this protocol can only handle files less than 100,000 lines. A file larger than this would be hundreds of Gigabytes, thus it was deemed suitable.
+00016      - data (string): 64 bytes of data taken from the file.
+00017    - The Socket programming inherited from the course tutorial only passes strings across the network, thus functions were written to convert frame structs to string (frame_to_string) and to assemble a frame struct from a string (assemble_frame)
+00018  - This program operates in two different scenarios:
+00019    - Scenario 1: One client requesting the data from the server
+00020      - In this scenario, there is only one client and one server
+00021    - Scenario 2: One server and up to five clients
+00022      - In this scenario, the server will use multithreading to handle requests from up to five clients
+00023  - Instructions:
+00024    1: Open the directory with the scenario you wish to test (S1 or S2)
+00025    2: On one machine, open the server directory in a terminal window and type make to compile the server program (server.cpp)
+00026    3: On another machine (or machines, if S2), open the client directory
+00027    4: Open the client.cpp program in your favourite IDE/text-editor. You will need to enter the name of the host which is running the server into the constructor of the client_socket object. Save and close.
+00028    5: In the terminal on the client machine, type make to compile the client program
+00029    6: Watch as this document is displayed on the terminal, in the correct order, and with no missing line :)
+00030    7: The client program will exit after it receives the whole data file from the server
+00031          s
+00032  ND OF FILE
