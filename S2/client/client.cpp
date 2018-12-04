@@ -12,9 +12,7 @@ int main() {
       std::cout << "Enter the IP address of the server (or localhost): ";
       std::cin >> IPaddr;
 
-      std::string port = "";
-      std::cout << "Please enter the server port number: ";
-      std::cin >> port;
+      std::string port = "30000";
       int dataPort = std::stoi(port);
 
       //Data port
