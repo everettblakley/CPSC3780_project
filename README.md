@@ -71,7 +71,10 @@ Enter the IP address of the server (or localhost):
 5.  Enter the IP address of the server (`142.66.140.XX`), or type localhost if the server is running locally. The client terminal should display
 ```
 Please enter the server port number:
-Enter the port number the server is running on (i.e. 30000). If successfully binding to that port, the terminal should display
+Enter the port number the server is running on (i.e. 30000). 
+```
+If successfully binding to that port, the terminal should display
+```
 Attempting to connect to [IP Address]
 
 The available files for transfer are:
